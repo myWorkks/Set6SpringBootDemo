@@ -16,4 +16,10 @@ public interface ProductService {
 
 	List<ProductDTO> filterByPriceAndName(Float price, String name);
 
+	List<ProductDTO> filterBypriceRange(Float start, Float end);
+
+	ProductDTO sortByName(String name);
+
+	void deleteEntity(Integer id);
+	void deleteMultipleEntities(List<Integer> ids);
 }

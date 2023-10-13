@@ -18,4 +18,9 @@ public interface ProductRepository extends CrudRepository<Product, Integer> {
 
 	List<Product> findByPriceGreaterThanAndProdNameLike(Float price, String name);
 
+	List<Product> findByPriceBetween(Float price1, Float price2);
+
+	Product findAllOrderByProdName(String name);
+	///code should work
+
 }

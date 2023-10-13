@@ -88,4 +88,49 @@ public class ProductServiceImpl implements ProductService {
 		return dto;
 	}
 
+	@Override
+	public List<ProductDTO> filterBypriceRange(Float start, Float end) {
+		List<Product> products = productRepository.findByPriceBetween(start, end);
+		List<ProductDTO> dto = products.stream().map((Product prod) -> {
+			ProductDTO pdto = new ProductDTO();
+			pdto.setBrand(prod.getBrand());
+			pdto.setProdName(prod.getProdName());
+			pdto.setPrice(prod.getPrice());
+			return pdto;
+		}).collect(Collectors.toList());
+		return dto;
+	}
+
+	@Override
+	public ProductDTO sortByName(String name) {
+		Product prod = productRepository.findAllOrderByProdName(name);
+		ProductDTO pdto = new ProductDTO();
+		pdto.setBrand(prod.getBrand());
+		pdto.setProdName(prod.getProdName());
+		pdto.setPrice(prod.getPrice());
+		return pdto;
+	}
+
+	@Override
+	public void deleteEntity(Integer id) {
+Optional<Product> opt=	productRepository.findById(id);
+//if(opt.isPresent())
+//	productRepository.deleteById(id);
+Product prod=opt.orElse(null);
+if(prod!=null)
+	productRepository.delete(prod);
+		
+	}
+
+	@Override
+	public void deleteMultipleEntities(List<Integer> ids) {
+Iterable<Product> products=	productRepository.findAllById(ids);
+for(Product prod:products) {
+	if(prod!=null) {
+		productRepository.delete(prod);
+	}
+}
+		
+	}
+
 }
