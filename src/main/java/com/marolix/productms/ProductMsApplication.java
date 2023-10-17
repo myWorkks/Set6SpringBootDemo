@@ -10,6 +10,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.marolix.productms.dto.ProductDTO;
+import com.marolix.productms.entity.Product;
 import com.marolix.productms.service.ProductService;
 
 @SpringBootApplication
@@ -28,13 +29,14 @@ public class ProductMsApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		// addProduct();
 		// getProductById();
-//		viewByBrand();
+		// viewByBrand();
 		// filterByprice();
 		// filterByPriceAndName();
 		// filterByRange();
 		// sortByName();
 		// deleteEntity();
-		deleMultipleEntities();
+		// deleMultipleEntities();
+		updateQuantity();
 	}
 
 	public void filterByprice() {
@@ -57,15 +59,19 @@ public class ProductMsApplication implements CommandLineRunner {
 		System.out.println("enter the brand name to search");
 		String s = sc.nextLine();
 		// next()
-		List<ProductDTO> dtos = productService.findProductByBrandName(s);
+//		List<ProductDTO> dtos = productService.findProductByBrandName(s);
+		ProductDTO productDTO = productService.findProductByBrandName(s);
 		System.out.println("Products based on brand  " + s);
 
 		System.out.println("----------------------------------------------");
 		System.out.println("name" + "\t" + "price");
 		System.out.println("----------------------------------------------");
-		for (ProductDTO productDTO : dtos) {
-			System.out.println(productDTO.getProdName() + "\t" + productDTO.getPrice());
-		}
+//		for (ProductDTO productDTO : dtos) {
+//			System.out.println(productDTO.getProdName() + "\t" + productDTO.getPrice());
+//		}
+
+		System.out.println(productDTO.getProdName() + "\t" + productDTO.getPrice());
+
 		System.out.println("----------------------------------------------");
 	}
 
@@ -166,5 +172,14 @@ public class ProductMsApplication implements CommandLineRunner {
 		productService.deleteMultipleEntities(prodIds);
 		System.out.println("deleted entities");
 
+	}
+
+	private void updateQuantity() {
+		System.out.println("enter product id");
+		int prodId = sc.nextInt();
+		System.out.println("enter qunatity");
+		int quantity = sc.nextInt();
+		String p = productService.updateProductQuantity(prodId, quantity);
+		System.out.println(p);
 	}
 }

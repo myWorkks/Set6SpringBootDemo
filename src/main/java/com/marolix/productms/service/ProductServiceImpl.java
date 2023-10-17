@@ -6,12 +6,14 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.marolix.productms.dto.ProductDTO;
 import com.marolix.productms.entity.Product;
 import com.marolix.productms.repository.ProductRepository;
 
 @Service(value = "productService")
+
 public class ProductServiceImpl implements ProductService {
 	@Autowired
 	private ProductRepository productRepository;
@@ -48,21 +50,30 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<ProductDTO> findProductByBrandName(String brand) {
-		List<Product> products = productRepository.findByBrand(brand);
-		List<ProductDTO> dto = products.stream().map((Product prod) -> {
-			ProductDTO pdto = new ProductDTO();
-			pdto.setBrand(prod.getBrand());
-			pdto.setProdName(prod.getProdName());
-			pdto.setPrice(prod.getPrice());
-			return pdto;
-		}).collect(Collectors.toList());
-		return dto;
+	public ProductDTO findProductByBrandName(String brand) {
+//	public List<ProductDTO> findProductByBrandName(String brand) {
+//		List<Product> products = productRepository.findByBrand(brand);
+//		List<ProductDTO> dto = products.stream().map((Product prod) -> {
+//			ProductDTO pdto = new ProductDTO();
+//			pdto.setBrand(prod.getBrand());
+//			pdto.setProdName(prod.getProdName());
+//			pdto.setPrice(prod.getPrice());
+//			return pdto;
+//		}).collect(Collectors.toList());
+//		return dto;
+		Product prod = productRepository.findByBrand(brand);
+
+		ProductDTO pdto = new ProductDTO();
+		pdto.setBrand(prod.getBrand());
+		pdto.setProdName(prod.getProdName());
+		pdto.setPrice(prod.getPrice());
+		return pdto;
+
 	}
 
 	@Override
 	public List<ProductDTO> filterByPriceGreater(Float price) {
-		List<Product> products = productRepository.findByPriceGreaterThan(price);
+		List<Product> products = productRepository.findByPriceGreaterThan1(price);
 
 		List<ProductDTO> dto = products.stream().map((Product prod) -> {
 			ProductDTO pdto = new ProductDTO();
@@ -90,7 +101,9 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public List<ProductDTO> filterBypriceRange(Float start, Float end) {
-		List<Product> products = productRepository.findByPriceBetween(start, end);
+		System.out.println("min price " + start);
+		System.out.println("max price " + end);
+		List<Product> products = productRepository.findByPriceBetween1(start, end);
 		List<ProductDTO> dto = products.stream().map((Product prod) -> {
 			ProductDTO pdto = new ProductDTO();
 			pdto.setBrand(prod.getBrand());
@@ -113,24 +126,31 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public void deleteEntity(Integer id) {
-Optional<Product> opt=	productRepository.findById(id);
+		Optional<Product> opt = productRepository.findById(id);
 //if(opt.isPresent())
 //	productRepository.deleteById(id);
-Product prod=opt.orElse(null);
-if(prod!=null)
-	productRepository.delete(prod);
-		
+		Product prod = opt.orElse(null);
+		if (prod != null)
+			productRepository.delete(prod);
+
 	}
 
 	@Override
 	public void deleteMultipleEntities(List<Integer> ids) {
-Iterable<Product> products=	productRepository.findAllById(ids);
-for(Product prod:products) {
-	if(prod!=null) {
-		productRepository.delete(prod);
+		Iterable<Product> products = productRepository.findAllById(ids);
+		for (Product prod : products) {
+			if (prod != null) {
+				productRepository.delete(prod);
+			}
+		}
+
 	}
-}
-		
+
+	@Override
+	@Transactional
+	public String updateProductQuantity(Integer prodId, Integer quantity) {
+		productRepository.updateProduct(quantity, prodId);
+		return "quantity updated successfully with prod id " + prodId;
 	}
 
 }
