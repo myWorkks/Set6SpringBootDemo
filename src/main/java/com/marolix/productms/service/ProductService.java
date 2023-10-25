@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.marolix.productms.dto.ProductDTO;
 import com.marolix.productms.entity.Product;
+import com.marolix.productms.execption.ProductApplicationException;
 
 public interface ProductService {
 
@@ -22,7 +23,7 @@ public interface ProductService {
 
 	ProductDTO sortByName(String name);
 
-	void deleteEntity(Integer id);
+	void deleteEntity(Integer id) throws ProductApplicationException;
 
 	void deleteMultipleEntities(List<Integer> ids);
 

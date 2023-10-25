@@ -2,6 +2,7 @@ package com.marolix.productms.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.marolix.productms.dto.ProductDTO;
 import com.marolix.productms.entity.Product;
+import com.marolix.productms.execption.ProductApplicationException;
 import com.marolix.productms.repository.ProductRepository;
 
 @Service(value = "productService")
@@ -62,7 +64,9 @@ public class ProductServiceImpl implements ProductService {
 //		}).collect(Collectors.toList());
 //		return dto;
 		Product prod = productRepository.findByBrand(brand);
-
+		System.out.println("value of prod " + prod);
+		if(prod==null)
+			 throw new ProductApplicationException("no product found with ");
 		ProductDTO pdto = new ProductDTO();
 		pdto.setBrand(prod.getBrand());
 		pdto.setProdName(prod.getProdName());
@@ -125,11 +129,10 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public void deleteEntity(Integer id) {
+	public void deleteEntity(Integer id) throws ProductApplicationException {
 		Optional<Product> opt = productRepository.findById(id);
-//if(opt.isPresent())
-//	productRepository.deleteById(id);
-		Product prod = opt.orElse(null);
+//Supplier<T>{T get();}
+		Product prod = opt.orElseThrow(() -> new ProductApplicationException("no product found with id " + id));
 		if (prod != null)
 			productRepository.delete(prod);
 

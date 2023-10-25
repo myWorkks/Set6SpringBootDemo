@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.marolix.productms.dto.ProductDTO;
 import com.marolix.productms.entity.Product;
+import com.marolix.productms.execption.ProductApplicationException;
 import com.marolix.productms.service.ProductService;
 
 @SpringBootApplication
@@ -29,14 +30,14 @@ public class ProductMsApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		// addProduct();
 		// getProductById();
-		// viewByBrand();
+	 viewByBrand();
 		// filterByprice();
 		// filterByPriceAndName();
 		// filterByRange();
 		// sortByName();
-		// deleteEntity();
+		//deleteEntity();
 		// deleMultipleEntities();
-		updateQuantity();
+		// updateQuantity();
 	}
 
 	public void filterByprice() {
@@ -156,8 +157,12 @@ public class ProductMsApplication implements CommandLineRunner {
 
 	public void deleteEntity() {
 		System.out.println("enter the id");
-		productService.deleteEntity(sc.nextInt());
-		System.out.println("entity deleted successfully");
+		try {
+			productService.deleteEntity(sc.nextInt());
+			System.out.println("entity deleted successfully");
+		} catch (ProductApplicationException e) {
+			System.out.println(e.getMessage());
+		}
 		sc.close();
 	}
 
